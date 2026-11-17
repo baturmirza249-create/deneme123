@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YazımDünyası – Türkçe Öğrenme Platformu</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SPLASH / GOOGLE AUTH -->
+<div id="splash">
+  <div class="splash-logo">Yazım<span>Dünyası</span> 📚</div>
+  <div class="splash-sub">Türkçe Yazım Kuralları Öğrenme Platformu</div>
+  <div class="login-box" style="text-align: center;">
+    <h2>Hoş Geldin!</h2>
+    <p>İlerlemeni kaydetmek ve öğrenmeye başlamak için Google hesabınla giriş yap.</p>
+    <button class="btn btn-gold" onclick="loginWithGoogle()" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.49h4.84c-.21 1.12-.86 2.08-1.82 2.72v2.26h2.94c1.72-1.58 2.72-3.9 2.72-6.63z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.94-2.26c-.81.54-1.84.86-3.02.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33C2.46 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.97 10.75c-.18-.54-.28-1.12-.28-1.75s.1-1.21.28-1.75V4.92H.96C.35 6.13 0 7.5 0 9s.35 2.87.96 4.08l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.46 2.02.96 4.92l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+      Google ile Giriş Yap
+    </button>
+    <div id="splash-alert"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+<header>
+  <div class="logo">Yazım<span>Dünyası</span> 📚</div>
+  <div class="user-badge">
+    <span>👤 <strong id="header-name"></strong></span>
+    <span class="score-badge">⭐ <span id="header-score">0</span></span>
+    <button onclick="logout()">Çıkış</button>
+  </div>
+</header>
+<nav>
+  <button class="nav-btn active" onclick="showPage('home',this)">🏠 Ana Sayfa</button>
+  <button class="nav-btn" onclick="showPage('topics',this)">📖 Konu Anlatımı</button>
+  <button class="nav-btn tdk-nav" onclick="showPage('tdk',this)">📘 TDK Kuralları</button>
+  <button class="nav-btn" onclick="showPage('cartoons',this)">🎨 Karikatürler</button>
+  <button class="nav-btn" onclick="showPage('quiz',this)">✏️ Quiz</button>
+  <button class="nav-btn" onclick="showPage('analysis',this)">📊 Analiz</button>
+  <button class="nav-btn admin-nav" id="admin-nav-btn" style="display:none" onclick="showPage('admin',this)">⚙️ Yönetici</button>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero-wrap">
+    <div class="hero-text">
+      <h1>Türkçeyi <span>Doğru</span> Yaz,<br>Güçlü Konuş!</h1>
+      <p>TDK kuralları, karikatürlü anlatımlar ve kişisel analizle yazım becerini geliştir.</p>
+      <div class="hero-btns">
+        <button class="btn btn-gold" onclick="showPage('tdk',document.querySelectorAll('.nav-btn')[2])">📘 TDK Kuralları</button>
+        <button class="btn btn-green" onclick="showPage('quiz',document.querySelectorAll('.nav-btn')[4])">✏️ Quiz Çöz</button>
+      </div>
+    </div>
+    <div class="hero-emoji">📝</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-c"><div class="stat-n" style="color:var(--accent)" id="hs-soru">0</div><div class="stat-l">Soru Bankası</div></div>
+    <div class="stat-c"><div class="stat-n" style="color:var(--accent2)" id="hs-karik">0</div><div class="stat-l">Karikatür</div></div>
+    <div class="stat-c"><div class="stat-n" style="color:var(--navy)" id="hs-konu">6</div><div class="stat-l">Konu Başlığı</div></div>
+    <div class="stat-c"><div class="stat-n" style="color:var(--red)" id="hs-puan">0</div><div class="stat-l">Toplam Puanım</div></div>
+  </div>
+  <div style="margin-bottom:14px"><div class="sec-title">Konular</div><div class="sec-sub">Bir konuya tıkla ve öğrenmeye başla</div></div>
+  <div class="home-grid">
+    <div class="home-card" onclick="goTopicTab('yazim','buyuk-harf')"><div class="hc-icon">🅰️</div><h3>Büyük Harf Kullanımı</h3><p>Cümle başları, özel isimler</p></div>
+    <div class="home-card" onclick="goTopicTab('yazim','de-ki-mi')"><div class="hc-icon">🔀</div><h3>de / ki / mi Yazımı</h3><p>En çok karıştırılan ekler</p></div>
+    <div class="home-card" onclick="goTopicTab('yazim','birlesik')"><div class="hc-icon">🔗</div><h3>Birleşik Kelimeler</h3><p>Bitişik ve ayrı yazım</p></div>
+    <div class="home-card" onclick="goTopicTab('noktalama','nokta')"><div class="hc-icon">❓</div><h3>Noktalama İşaretleri</h3><p>Virgül, nokta, iki nokta…</p></div>
+    <div class="home-card" onclick="goTopicTab('yazim','sayilar')"><div class="hc-icon">🔢</div><h3>Sayıların Yazımı</h3><p>Rakam mı, yazı mı?</p></div>
+    <div class="home-card" onclick="showPage('tdk',document.querySelectorAll('.nav-btn')[2])"><div class="hc-icon">📘</div><h3>TDK Kuralları</h3><p>Kapsamlı yazım rehberi</p></div>
+  </div>
+  <div class="news-section">
+    <div class="sec-title">📰 Haberler & Duyurular</div>
+    <div class="sec-sub">Yönetici tarafından eklenen güncel haberler</div>
+    <div class="news-grid" id="news-grid"></div>
+    <div id="no-news" class="no-news">Henüz haber eklenmemiş.</div>
+  </div>
+</div>
+
+<!-- TOPICS -->
+<div id="page-topics" class="page">
+  <div class="sec-title">📖 Konu Anlatımı</div>
+  <div class="sec-sub">TDK kurallarına dayalı detaylı anlatımlar</div>
+  <div class="topic-tabs">
+    <button class="topic-tab active" onclick="setTopicTab('yazim',this)">✍️ Yazım Kuralları</button>
+    <button class="topic-tab" onclick="setTopicTab('noktalama',this)">🔤 Noktalama İşaretleri</button>
+  </div>
+  <div id="topic-tab-yazim" class="topic-main-area active">
+    <div class="topics-layout">
+      <div class="topic-sidebar"><h3>Yazım Kuralları</h3><div id="sidebar-yazim"></div></div>
+      <div id="content-yazim"></div>
+    </div>
+  </div>
+  <div id="topic-tab-noktalama" class="topic-main-area">
+    <div class="topics-layout">
+      <div class="topic-sidebar"><h3>Noktalama İşaretleri</h3><div id="sidebar-noktalama"></div></div>
+      <div id="content-noktalama"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TDK -->
+<div id="page-tdk" class="page">
+  <div class="tdk-hero">
+    <h1>📘 TDK Yazım Kuralları</h1>
+    <p>Türk Dil Kurumu yazım kılavuzuna dayalı kapsamlı kural anlatımları ve noktalama işaretleri rehberi.</p>
+  </div>
+  <div class="tdk-tabs">
+    <button class="tdk-tab active" onclick="setTdkTab('yazim',this)">✍️ Yazım Kuralları</button>
+    <button class="tdk-tab" onclick="setTdkTab('noktalama',this)">🔤 Noktalama İşaretleri</button>
+  </div>
+  <div id="tdk-yazim" class="tdk-section active"><div id="tdk-yazim-blocks"></div></div>
+  <div id="tdk-noktalama" class="tdk-section"><div id="tdk-noktalama-blocks"></div></div>
+</div>
+
+<!-- CARTOONS -->
+<div id="page-cartoons" class="page">
+  <div class="sec-title">🎨 Karikatür Galerisi</div>
+  <div class="sec-sub">Yazım kurallarını eğlenceli karikatürlerle keşfet</div>
+  <div class="cartoon-filter" id="cartoon-filter">
+    <button class="cf-btn active" onclick="filterCartoons('all',this)">Tümü</button>
+    <button class="cf-btn" onclick="filterCartoons('buyuk-harf',this)">Büyük Harf</button>
+    <button class="cf-btn" onclick="filterCartoons('noktalama',this)">Noktalama</button>
+    <button class="cf-btn" onclick="filterCartoons('birlesik',this)">Birleşik Yazım</button>
+    <button class="cf-btn" onclick="filterCartoons('de-ki-mi',this)">ki / mi / de</button>
+    <button class="cf-btn" onclick="filterCartoons('sayilar',this)">Sayılar</button>
+  </div>
+  <div class="cartoon-gallery" id="cartoon-gallery"></div>
+  <div id="no-cartoon" style="display:none;text-align:center;padding:36px;color:var(--muted)">Bu konuya henüz karikatür eklenmemiş.</div>
+</div>
+
+<!-- QUIZ -->
+<div id="page-quiz" class="page">
+  <div class="quiz-wrap">
+    <div id="quiz-start" class="quiz-start-screen">
+      <div style="font-size:2.8rem;margin-bottom:10px">✏️</div>
+      <h2>Quiz'e Başla</h2>
+      <p style="color:var(--muted);margin-bottom:22px">Konu, zorluk ve soru sayısını seç!</p>
+      <div class="quiz-options-grid">
+        <div class="qo-group"><label>Konular</label><div id="topic-checkboxes"></div></div>
+        <div class="qo-group">
+          <label>Zorluk</label>
+          <label class="qo-check"><input type="checkbox" class="diff-check" value="Kolay" checked> Kolay</label>
+          <label class="qo-check"><input type="checkbox" class="diff-check" value="Orta" checked> Orta</label>
+          <label class="qo-check"><input type="checkbox" class="diff-check" value="Zor" checked> Zor</label>
+        </div>
+        <div class="qo-group">
+          <label>Soru Sayısı</label>
+          <select class="qo-count" id="q-count">
+            <option value="5">5 soru</option>
+            <option value="10" selected>10 soru</option>
+            <option value="20">20 soru</option>
+            <option value="30">30 soru</option>
+            <option value="50">50 soru</option>
+            <option value="all">Tümü</option>
+          </select>
+          <div style="margin-top:10px">
+            <label style="font-size:0.74rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Soru Tipi</label>
+            <label class="qo-check"><input type="checkbox" class="type-check" value="mc" checked> Çoktan Seçmeli</label>
+            <label class="qo-check"><input type="checkbox" class="type-check" value="tf" checked> Doğru / Yanlış</label>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-gold" style="width:100%;font-size:0.98rem" onclick="startQuiz()">🚀 Quiz'i Başlat</button>
+      <div id="quiz-start-alert" style="color:var(--red);font-size:0.82rem;margin-top:9px;min-height:16px"></div>
+    </div>
+    <div id="quiz-active" style="display:none">
+      <div class="qz-header">
+        <div><div class="sec-title" style="margin-bottom:0">✏️ Quiz</div></div>
+        <div style="display:flex;gap:9px;align-items:center">
+          <div class="score-pill">⭐ <span id="qz-score">0</span> puan</div>
+          <button class="btn btn-outline btn-sm" onclick="backToStart()">← Geri</button>
+        </div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-label"><span>Soru <span id="qz-idx">0</span> / <span id="qz-tot">0</span></span><span id="qz-pct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="qz-fill" style="width:0%"></div></div>
+      </div>
+      <div id="qz-container"></div>
+      <div id="quiz-done" style="display:none;text-align:center;padding:44px 18px">
+        <div style="font-size:3.8rem">🎉</div>
+        <h2 style="font-size:1.9rem;color:var(--accent);margin:10px 0">Quiz Tamamlandı!</h2>
+        <p style="color:var(--muted);margin-bottom:14px">Toplam Puan:</p>
+        <div style="font-size:2.4rem;font-weight:800;color:var(--navy);margin-bottom:22px"><span id="qz-final">0</span></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-gold" onclick="showPage('analysis',document.querySelectorAll('.nav-btn')[5])">📊 Analizimi Gör</button>
+          <button class="btn btn-green" onclick="backToStart()">🔄 Yeni Quiz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ANALYSIS -->
+<div id="page-analysis" class="page">
+  <div class="sec-title">📊 Performans Analizi</div>
+  <div class="sec-sub">Güçlü ve zayıf konularını keşfet</div>
+  <div class="an-grid" id="an-stats"></div>
+  <div class="an-details" id="an-details"></div>
+</div>
+
+<!-- ADMIN -->
+<div id="page-admin" class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+    <div><div class="sec-title" style="margin-bottom:0">⚙️ Yönetici Paneli</div><div style="color:var(--muted);font-size:0.85rem">İçerik ve Soru Yönetimi</div></div>
+  </div>
+  <div class="admin-layout">
+    <div class="admin-sb">
+      <h3>Sorular & Medya</h3>
+      <button class="asb-btn active" onclick="showAdmPanel('q-add',this)">➕ Soru Ekle</button>
+      <button class="asb-btn" onclick="showAdmPanel('q-bulk',this)">📂 Toplu Soru Yükle</button>
+      <button class="asb-btn" onclick="showAdmPanel('q-list',this)">📋 Soru Listesi</button>
+      <button class="asb-btn" onclick="showAdmPanel('c-add',this)">🖼️ Karikatür Ekle</button>
+      <button class="asb-btn" onclick="showAdmPanel('c-list',this)">🎨 Karikatür Listesi</button>
+      <h3 style="margin-top:14px">İçerik</h3>
+      <button class="asb-btn" onclick="showAdmPanel('block-add',this)">📝 İçerik Bloğu Ekle</button>
+      <button class="asb-btn" onclick="showAdmPanel('block-list',this)">📋 İçerik Listesi</button>
+      <h3 style="margin-top:14px">Diğer</h3>
+      <button class="asb-btn" onclick="showAdmPanel('news-add',this)">📰 Haber Ekle</button>
+      <button class="asb-btn" onclick="showAdmPanel('news-list',this)">📋 Haber Listesi</button>
+      <button class="asb-btn" onclick="showAdmPanel('users',this)">👥 Kullanıcılar</button>
+    </div>
+    <div>
+
+      <!-- SORU EKLE -->
+      <div id="adm-q-add" class="admin-panel active">
+        <h2>➕ Yeni Soru Ekle</h2>
+        <div id="al-qadd" class="al"></div>
+        <div class="af">
+          <div class="fr">
+            <div class="fg"><label>Konu</label><select id="aq-topic"></select></div>
+            <div class="fg"><label>Zorluk</label><select id="aq-diff"><option>Kolay</option><option>Orta</option><option>Zor</option></select></div>
+          </div>
+          <div class="fg"><label>Soru Tipi</label>
+            <select id="aq-type" onchange="toggleQType()">
+              <option value="mc">Çoktan Seçmeli (4 şık)</option>
+              <option value="tf">Doğru / Yanlış</option>
+            </select>
+          </div>
+          <div class="fg"><label>Soru Metni</label><textarea id="aq-text" placeholder="Soruyu buraya yazın..."></textarea></div>
+          <div id="mc-opts">
+            <div class="fg">
+              <label>Seçenekler</label>
+              <div class="opts-ed">
+                <div class="oi-row"><span class="oi-lbl">A</span><input type="text" id="oa" placeholder="Seçenek A"><label class="cr-label"><input type="radio" name="cr" value="0"> Doğru</label></div>
+                <div class="oi-row"><span class="oi-lbl">B</span><input type="text" id="ob" placeholder="Seçenek B"><label class="cr-label"><input type="radio" name="cr" value="1"> Doğru</label></div>
+                <div class="oi-row"><span class="oi-lbl">C</span><input type="text" id="oc" placeholder="Seçenek C"><label class="cr-label"><input type="radio" name="cr" value="2"> Doğru</label></div>
+                <div class="oi-row"><span class="oi-lbl">D</span><input type="text" id="od" placeholder="Seçenek D"><label class="cr-label"><input type="radio" name="cr" value="3"> Doğru</label></div>
+              </div>
+            </div>
+          </div>
+          <div id="tf-opts" style="display:none">
+            <div class="fg"><label>Doğru Cevap</label>
+              <div style="display:flex;gap:14px;margin-top:7px">
+                <label class="qo-check"><input type="radio" name="tf-ans" value="1"> ✅ Doğru</label>
+                <label class="qo-check"><input type="radio" name="tf-ans" value="0"> ❌ Yanlış</label>
+              </div>
+            </div>
+          </div>
+          <div class="fg"><label>Açıklama</label><textarea id="aq-expl" placeholder="Doğru cevabın açıklaması..."></textarea></div>
+          <button class="btn btn-green" onclick="addQuestion()">✅ Soruyu Kaydet</button>
+        </div>
+      </div>
+
+      <!-- TOPLU SORU YÜKLE -->
+      <div id="adm-q-bulk" class="admin-panel">
+        <h2>📂 Toplu Soru Yükle (JSON)</h2>
+        <div id="al-qbulk" class="al"></div>
+        <div class="af">
+          <p style="color:var(--muted);font-size:0.88rem;margin-bottom:12px;font-family:'Lora',serif;">
+            Hazırladığınız JSON dosyasını seçerek veya doğrudan yapıştırarak yüzlerce soruyu tek seferde veritabanına ekleyebilirsiniz.
+          </p>
+          <div class="note-box" style="margin-bottom:16px;font-family:monospace;font-size:0.78rem;">
+            Örnek JSON Formatı:<br>
+            [<br>
+            &nbsp;&nbsp;{"topic": "buyuk-harf", "difficulty": "Kolay", "type": "mc", "text": "Soru metni?", "options": ["A", "B", "C", "D"], "correct": 1, "explanation": "Açıklama"},<br>
+            &nbsp;&nbsp;{"topic": "noktalama", "difficulty": "Orta", "type": "tf", "text": "Doğru yanlış sorusu?", "tfCorrect": true, "explanation": "Açıklama"}<br>
+            ]
+          </div>
+          <div class="fg">
+            <label>JSON Dosyası Yükle</label>
+            <input type="file" id="bulk-file" accept=".json" onchange="loadBulkFile(this)">
+          </div>
+          <div class="fg">
+            <label>Veya JSON Verisini Doğrudan Yapıştır</label>
+            <textarea id="bulk-json-text" style="min-height:160px;font-family:monospace;font-size:0.82rem;" placeholder='[{"topic": "buyuk-harf", ...}]'></textarea>
+          </div>
+          <button class="btn btn-green" onclick="uploadBulkQuestions()">🚀 Toplu Soruları Kaydet</button>
+        </div>
+      </div>
+
+      <!-- SORU LİSTE -->
+      <div id="adm-q-list" class="admin-panel">
+        <h2>📋 Soru Listesi (<span id="q-total-badge">0</span>)</h2>
+        <div class="items-list"><h3>Mevcut Sorular</h3><div id="q-list-wrap"></div></div>
+      </div>
+
+      <!-- KARİKATÜR EKLE -->
+      <div id="adm-c-add" class="admin-panel">
+        <h2>🖼️ Karikatür Ekle</h2>
+        <div id="al-cadd" class="al"></div>
+        <div class="af">
+          <div class="fr">
+            <div class="fg"><label>Konu</label><select id="ac-topic"></select></div>
+            <div class="fg"><label>Emoji (yedek)</label><input type="text" id="ac-emoji" placeholder="🤔" maxlength="4"></div>
+          </div>
+          <div class="fg"><label>Görsel Yükle (Otomatik Sıkıştırma Aktif)</label>
+            <div class="upload-area" onclick="document.getElementById('ac-file').click()">
+              <div>📁 Görseli buraya tıklayarak seç</div>
+              <div style="font-size:0.78rem;color:var(--muted);margin-top:3px">Yüksek boyutlu görseller otomatik olarak sıkıştırılıp optimize edilir (Max 10MB dosya seçebilirsiniz).</div>
+              <input type="file" id="ac-file" accept="image/*" onchange="previewAndCompressImage(this)">
+              <img id="ac-preview" class="upload-preview" style="display:none">
+              <div id="ac-compress-info" style="font-size:0.75rem;color:var(--green);margin-top:6px;font-weight:700;"></div>
+            </div>
+          </div>
+          <div class="fg"><label>Konuşma Balonu</label><input type="text" id="ac-bubble" placeholder="Karikatür repliği..."></div>
+          <div class="fg"><label>Başlık</label><input type="text" id="ac-title" placeholder="Kural başlığı"></div>
+          <div class="fg"><label>Açıklama</label><textarea id="ac-desc" placeholder="Kuralın açıklaması..."></textarea></div>
+          <div class="fg"><label>Altyazı (opsiyonel)</label><input type="text" id="ac-caption" placeholder="Karikatürün altında görünecek not..."></div>
+          <button class="btn btn-green" onclick="addCartoon()">✅ Karikatürü Kaydet</button>
+        </div>
+      </div>
+
+      <!-- KARİKATÜR LİSTE -->
+      <div id="adm-c-list" class="admin-panel">
+        <h2>🎨 Karikatür Listesi</h2>
+        <div class="items-list"><h3>Mevcut Karikatürler</h3><div id="c-list-wrap"></div></div>
+      </div>
+
+      <!-- İÇERİK BLOĞU EKLE -->
+      <div id="adm-block-add" class="admin-panel">
+        <h2>📝 İçerik Bloğu Ekle / Düzenle</h2>
+        <div id="al-blockadd" class="al"></div>
+        <div class="af">
+          <input type="hidden" id="block-edit-id" value="">
+          <div class="fr">
+            <div class="fg"><label>Bölüm</label>
+              <select id="block-section">
+                <option value="topics-yazim">Konu Anlatımı – Yazım Kuralları</option>
+                <option value="topics-noktalama">Konu Anlatımı – Noktalama</option>
+                <option value="tdk-yazim">TDK – Yazım Kuralları</option>
+                <option value="tdk-noktalama">TDK – Noktalama</option>
+              </select>
+            </div>
+            <div class="fg"><label>Alt Konu (sidebar)</label>
+              <select id="block-sub">
+                <option value="buyuk-harf">Büyük Harf</option>
+                <option value="sayilar">Sayıların Yazımı</option>
+                <option value="de-ki-mi">de / ki / mi</option>
+                <option value="birlesik">Birleşik Kelimeler</option>
+                <option value="kisaltma">Kısaltmalar</option>
+                <option value="karisik">Karıştırılan Kelimeler</option>
+                <option value="nokta">Nokta</option>
+                <option value="virgul">Virgül</option>
+                <option value="noktali-virgul">Noktalı Virgül</option>
+                <option value="iki-nokta">İki Nokta</option>
+                <option value="uc-nokta">Üç Nokta</option>
+                <option value="soru">Soru İşareti</option>
+                <option value="unlem">Ünlem İşareti</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>Blok Başlığı</label><input type="text" id="block-title" placeholder="Kural başlığı..."></div>
+          <div class="fg"><label>İçerik (her satır ayrı madde olur)</label><textarea id="block-content" placeholder="Kural 1&#10;Kural 2&#10;Kural 3..." style="min-height:110px"></textarea></div>
+          <div class="fr">
+            <div class="fg"><label>Örnek Doğru</label><input type="text" id="block-good" placeholder="✅ Doğru örnek..."></div>
+            <div class="fg"><label>Örnek Yanlış</label><input type="text" id="block-bad" placeholder="❌ Yanlış örnek..."></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label>Mini Karikatür Emoji</label><input type="text" id="block-emoji" placeholder="🤔" maxlength="4"></div>
+            <div class="fg"><label>Mini Karikatür Metni</label><input type="text" id="block-bubble" placeholder="Balon metni..."></div>
+          </div>
+          <div class="fg"><label>Not Kutusu (opsiyonel)</label><input type="text" id="block-note" placeholder="💡 Önemli not..."></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-green" onclick="saveBlock()">✅ Bloğu Kaydet</button>
+            <button class="btn btn-outline btn-sm" onclick="cancelBlockEdit()">İptal</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- İÇERİK LİSTE -->
+      <div id="adm-block-list" class="admin-panel">
+        <h2>📋 İçerik Bloğu Listesi</h2>
+        <div class="items-list"><h3>Tüm İçerik Blokları</h3><div id="block-list-wrap"></div></div>
+      </div>
+
+      <!-- HABER EKLE -->
+      <div id="adm-news-add" class="admin-panel">
+        <h2>📰 Haber Ekle</h2>
+        <div id="al-newsadd" class="al"></div>
+        <div class="af" style="max-width:540px">
+          <div class="fg"><label>Başlık</label><input type="text" id="news-title" placeholder="Haber başlığı..."></div>
+          <div class="fg"><label>İçerik</label><textarea id="news-content" placeholder="Haber içeriği..." style="min-height:95px"></textarea></div>
+          <div class="fr">
+            <div class="fg"><label>Etiket</label><input type="text" id="news-tag" placeholder="Duyuru, Etkinlik..."></div>
+            <div class="fg"><label>Tarih</label><input type="date" id="news-date"></div>
+          </div>
+          <button class="btn btn-green" onclick="addNews()">✅ Haberi Yayınla</button>
+        </div>
+      </div>
+
+      <!-- HABER LİSTE -->
+      <div id="adm-news-list" class="admin-panel">
+        <h2>📋 Haber Listesi</h2>
+        <div class="items-list"><h3>Mevcut Haberler</h3><div id="news-list-wrap"></div></div>
+      </div>
+
+      <!-- KULLANICILAR -->
+      <div id="adm-users" class="admin-panel">
+        <h2>👥 Kayıtlı Kullanıcılar</h2>
+        <div class="items-list"><h3>Google ile Giriş Yapan Kullanıcılar</h3><div id="users-list-wrap"></div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div><!-- /app -->
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLB(event)">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <div class="lb-img" id="lb-img"></div>
+    <div class="lb-body">
+      <div style="font-size:0.72rem;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:5px" id="lb-topic"></div>
+      <h2 id="lb-title"></h2>
+      <p id="lb-desc" style="margin-top:9px"></p>
+      <div id="lb-caption" class="lb-caption" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase Compat SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- Uygulama Dosyaları -->
+<script src="firebase-config.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
