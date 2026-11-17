@@ -1033,21 +1033,6 @@ function esc(str) {
 // ════════════════════════════════════════════════════════
 // UYGULAMA DURUMU (STATE - LOCALSTORAGE YOK, FIRESTORE TABANLI)
 // ════════════════════════════════════════════════════════
-let currentUser = null;
-let isAdmin = false;
-let questions = [...DEFAULT_QUESTIONS];
-let cartoons = [...DEFAULT_CARTOONS];
-let newsItems = [];
-let contentBlocks = [...DEFAULT_BLOCKS];
-let allUsersData = [];
-
-let quizResults = {};
-let totalScore = 0;
-
-let currentQ = 0, score = 0, answered = [], activeQuestions = [];
-let quizScoreAdded = false;
-let compressedCartoonData = null;
-
 // ════════════════════════════════════════════════════════
 // FIREBASE AUTH & OTURUM YÖNETİMİ
 // ════════════════════════════════════════════════════════
